@@ -20,14 +20,14 @@ const init = (name) => {
     type: 'list',
     name: 'template',
     message: '请选择模板：',
-    choices: ['rollup', 'vue']
+    choices: ['vue2', 'vue3', 'typescript', 'webcomponent']
   }]).then(res => {
     const template = res.template
     console.log(logSymbols.warning, `您选择了[${chalk.green(template)}]模板，即将开始拉取模板！`)
     const spinner = ora('正在拉取中……');
     spinner.start()
     var start = (new Date()).getTime()
-    download(`direct:https://codeload.github.com/swimly/${template}-template/zip/master`, name, { clone: false }, (err) => {
+    download(`direct:https://codeload.github.com/swimly/${template}/zip/master`, name, { clone: false }, (err) => {
       if (err) {
         spinner.fail('失败')
         console.log(err)
