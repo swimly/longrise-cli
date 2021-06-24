@@ -21,16 +21,25 @@ const init = (name) => {
     name: 'template',
     message: '请选择模板：',
     choices: ['vue2', 'vue3', 'typescript', 'webcomponent']
+  }, {
+    type: 'list',
+    name: 'platform',
+    message: '请选择源',
+    choices: ['github', 'gitee']
   }]).then(res => {
     const template = res.template
-    console.log(logSymbols.warning, `您选择了[${chalk.green(template)}]模板，即将开始拉取模板！`)
+    const platform = res.platform
+    console.log(logSymbols.warning, `您选择了[${chalk.green(template)}]模板，即将开始从https://github.com/swimly/${template}拉取模板！`)
     const spinner = ora('正在拉取中……');
     spinner.start()
     var start = (new Date()).getTime()
-    download(`direct:https://codeload.github.com/swimly/${template}/zip/master`, name, { clone: false }, (err) => {
+    download(`${platform}:swimly/${template}`, name, { clone: false }, (err) => {
       if (err) {
-        spinner.fail('失败')
-        console.log(err)
+        if (err.code === 'ENOTFOUND') {
+          spinner.fail(chalk.red(`${platform}尚未发布，请耐心等待！`))
+        } else {
+          spinner.fail(chalk.red(`由于网络原因，创建不成功，请检查是否能正常访问：https://www.${platform}.com。`))
+        }
       } else {
         const distime = ((new Date()).getTime() - start) / 1000
         spinner.succeed(`远程模板拉取成功！`)
@@ -39,6 +48,10 @@ const init = (name) => {
         console.log('执行如下命令：')
         console.log(logSymbols.success, `cd ${name}`)
         console.log(logSymbols.success, `npm install || cnpm install || yarn`)
+        console.log(logSymbols.success, `项目启动：yarn dev`)
+        console.log(logSymbols.success, `项目打包：yarn build`)
+        console.log(logSymbols.success, `启动文档：yarn doc`)
+        console.log(logSymbols.success, `打包文档：yarn build:doc`)
       }
     })
   })

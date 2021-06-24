@@ -1,6 +1,6 @@
 {
   "name": "@swimly/longrise-cli",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "description": "",
   "bin": {
     "longrise": "./bin/index.js"
